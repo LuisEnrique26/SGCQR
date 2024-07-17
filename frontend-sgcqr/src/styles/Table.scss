@@ -1,0 +1,34 @@
+.table {
+    height: 100%;
+    width: calc(100% - 2rem);
+}
+
+.table table {
+    margin-top: 1rem;
+    border-collapse: collapse;
+    width: 100%;
+    text-align: center;
+}
+
+.table thead {
+    background-color: rgb(17, 16, 16);
+    font-weight: bold;
+}
+
+.table td {
+    padding: 5px;
+}
+
+.table tr:hover {
+    background: #242424;
+    transition: .4s;
+}
+
+.table tr:nth-child(even) {
+  background: #242424;
+}
+
+.table tr:nth-child(even):hover {
+    background: #515151;
+    transition: .4s;
+}
