@@ -4,6 +4,9 @@
     grid-auto-rows: minmax(20rem, auto);
     grid-gap: 1rem;
     gap: 1rem;
+    grid-template-areas: 
+    "left right"
+    "full full";
 }
 
 .card {
@@ -15,14 +18,20 @@
     border-radius: 1rem;
 }
 
+.comparer {
+    display: flex;
+}
+
+.aspect {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .tableSection {
     padding-bottom: 1rem;
     height: fit-content;
-}
-
-.missingSection {
-    height: fit-content;
-    padding-bottom: 1rem;
+    grid-area: full;
 }
 
 .buttons {
@@ -53,25 +62,4 @@
     border-radius: 1rem;
     font-size: 18px;
     padding: 0 10px;
-}
-
-.cardMissing {
-    display: flex;
-    flex-direction: column;
-    padding: 1rem;
-    width: calc(100% - 2rem);
-    border-radius: 1rem;
-    margin: .5rem 0;
-}
-
-.missing {
-    background-color: rgb(168, 72, 72);
-}
-
-.complete {
-    background-color: rgb(64, 155, 69);
-}
-
-.cardMissing p {
-    font-weight: bold;
 }

@@ -3,6 +3,7 @@ import { useData } from "../context/DataContext";
 import "./../styles/ScanForm.scss";
 import Table from "../components/Table";
 import Button from "../components/Button";
+import { CgChevronRight, CgChevronLeft, CgMathEqual } from "react-icons/cg";
 
 function ScanFormPage() {
     const { handleSubmit } = useData();
@@ -10,8 +11,6 @@ function ScanFormPage() {
     const [text, setText] = useState("");
     const [message, setMessage] = useState([""]);
     const [classMessage, setClassMessage] = useState("messagesUn");
-    const [arrMultipleBoxes, setArrMultipleBoxes] = useState([]);
-    const [multiplePedidos, setMultiplePedidos] = useState([]);
     const [count, setCount] = useState(0);
 
     const parseString = (inputString) => {
@@ -79,8 +78,6 @@ function ScanFormPage() {
     const handleDelete = () => {
         setData([]);
         setText("");
-        setArrMultipleBoxes([]);
-        setMultiplePedidos([]);
         setCount(0);
     };
 
@@ -157,53 +154,11 @@ function ScanFormPage() {
         setData((prevItems) => prevItems.slice(0, -1));
     };
 
-    const checkMultipleBoxes = () => {
-        const newArr = data.filter((item) => item.caja !== "1-1");
-        setArrMultipleBoxes(newArr);
-    };
-
-    useEffect(() => {
-        checkMultipleBoxes();
-        validatePedidos();
-    }, [data]);
-
-    useEffect(() => {
-        validatePedidos();
-    }, [arrMultipleBoxes]);
-
-    useEffect(() => {
-        console.log(multiplePedidos);
-    }, [multiplePedidos]);
-
-    const validatePedidos = () => {
-        const groupedByPedido = arrMultipleBoxes.reduce((acc, obj) => {
-            if (!acc[obj.pedido]) {
-                acc[obj.pedido] = [];
-            }
-            acc[obj.pedido].push(obj);
-            return acc;
-        }, {});
-
-        const validationResults = Object.keys(groupedByPedido).map((pedido) => {
-            const items = groupedByPedido[pedido];
-            const nCajas = parseInt(items[0].caja.substr(-1));
-            const completo = items.length === nCajas;
-
-            return {
-                pedido,
-                items,
-                completo,
-            };
-        });
-
-        setMultiplePedidos(validationResults);
-    };
-
     // const handleExportData = () => {
     //     try {
     //         exportData();
     //         const blob = new Blob([exportDataResponse], { type: 'blob' });
-            
+
     //         const url = window.URL.createObjectURL(blob);
 
     //         const link = document.createElement('a');
@@ -261,51 +216,36 @@ function ScanFormPage() {
             <div className="card">
                 <div className="card">
                     <h3>Cajas a Completar</h3>
-                    <input type="number" className="inputQR" onKeyDown={handleInputCount}/>
-                    <p
-                        className="count"
-                        style={{ fontSize: 55 }}
-                    >
-                        {count}
-                    </p>
+                    <input
+                        type="number"
+                        className="inputQR"
+                        onKeyDown={handleInputCount}
+                    />
                 </div>
-                <div className="card">
-                    <h1>Total de Cajas</h1>
-                    <p className="count">{data.length}</p>
+                <div className="comparer">
+                    <div className="aspect">
+                        <h2>Escaneadas</h2>
+                        <p className="count">{data.length}</p>
+                    </div>
+                    <i className="count">
+                        {data.length < count ? (
+                            <CgChevronLeft />
+                        ) : data.length > count ? (
+                            <CgChevronRight />
+                        ) : (
+                            <CgMathEqual />
+                        )}
+                    </i>
+                    <div className="aspect">
+                        <h2>A completar</h2>
+                        <p className="count">{count}</p>
+                    </div>
                 </div>
             </div>
 
             <div className="tableSection card">
                 <h1 htmlFor="">Cajas Escaneadas</h1>
                 <Table params={data} />
-            </div>
-            
-            <div className="missingSection card">
-                <h1 htmlFor="">Cajas Múltiples</h1>
-                {multiplePedidos.map((pedido, index) => (
-                    <div
-                        className={
-                            pedido.completo
-                                ? "cardMissing complete"
-                                : "cardMissing missing"
-                        }
-                        key={index}
-                    >
-                        <p>
-                            Pedido: {pedido.pedido} {" --> "}{" "}
-                            {pedido.completo ? "Completo" : "Incompleto"}
-                        </p>
-                        <ul>
-                            {pedido.items.map((item, idx) => (
-                                <li key={idx}>
-                                    Zona: {item.zona}, Dama: {item.dama}, Caja:{" "}
-                                    <b>{item.caja}</b>
-                                </li>
-                            ))}
-                        </ul>
-                        <br />
-                    </div>
-                ))}
             </div>
         </section>
     );

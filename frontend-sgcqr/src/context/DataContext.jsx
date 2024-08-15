@@ -1,5 +1,6 @@
 import { useContext, createContext, useState } from "react";
-import { exportDataRequest, receiveDataRequest } from "../api/counts";
+import { useNavigate } from "react-router-dom";
+import { receiveDataRequest } from "../api/counts";
 
 const DataContext = createContext();
 
@@ -13,32 +14,35 @@ export const useData = () => {
 }
 
 export const DataProvider = ({ children }) => {
-    const [exportDataResponse, setExportDataResponse] = useState(null);
+    const [submitedData, setSubmitedData] = useState(null);
+    const navigate = useNavigate();
+
     
     const handleSubmit = async (data) => {
         try {
-            const res = await receiveDataRequest(data);
-            console.log(res.data);
+            await receiveDataRequest(data);
+            setSubmitedData(data);
+            navigate('/result');
         } catch (error) {
             console.log("Error al enviar lista \n", error.response);
         }
     };
 
-    const exportData = async () => {
-        try {
-            const r = await exportDataRequest();
-            setExportDataResponse(r.data);
-            console.log(r.data);
-        } catch (error) {
-            console.log("Error al exportar", error);
-        }
-    }
+    // const exportData = async () => {
+    //     try {
+    //         const r = await exportDataRequest();
+    //         setExportDataResponse(r.data);
+    //         console.log(r.data);
+    //     } catch (error) {
+    //         console.log("Error al exportar", error);
+    //     }
+    // }
     
     return (
         <DataContext.Provider value={{
             handleSubmit,
-            exportData,
-            exportDataResponse
+            submitedData,
+            setSubmitedData
         }}>
             { children }
         </DataContext.Provider>
